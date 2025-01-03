@@ -1,0 +1,32 @@
+{
+  "name": "recipewebbackend",
+  "version": "1.0.0",
+  "description": "예준팀 냉장고를 부탁해 웹어플리케이션 백엔드 레포지토리.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yejun2/RecipeWebBackEnd.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yejun2/RecipeWebBackEnd/issues"
+  },
+  "homepage": "https://github.com/yejun2/RecipeWebBackEnd#readme",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mysql2": "^3.12.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
