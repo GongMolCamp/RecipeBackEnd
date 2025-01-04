@@ -3,8 +3,50 @@ var express = require('express');
 var router = express.Router();
 var db = require('../controllers/db.js')
 const {json} = require('express/lib/response.js');
+const openAi = require('openai');
+const {open_ai_api_key} = require('../API_KEYS/OPEN_API_KEY');
 
-// 프로그램 전체 쿼리
+
+const openAiModel = new openAi({
+  apiKey:open_ai_api_key
+});
+
+async function fetch_openai_api(ingredient, preference) {
+  const comment = ['내가 가진 재료는 ', '이야.', '내 음식 취향은 ', '가장 적합한 요리 10개만 추천해줘.'
+    + '{"result": [ {"no": 번호, "dish": 음식이름, "ingredients": [재료1, 재료2, ..., 재료]}, ...]} 이런 형태의 json으로 알려줘.'];
+  const response = await openAiModel.chat.completions.create({
+    model: "gpt-4",
+    messages: [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": comment[0] + ingredient + comment[1] 
+            + comment[2] + preference + comment[1] + comment[3],
+          }
+        ]
+      }
+    ],
+    
+  });
+  //console.log(response.choices[0].message.content);
+  const result = JSON.parse(response.choices[0].message.content);
+  return result;
+}
+
+// openAI api 호출 라우터
+router.post('/open_ai_api/', async function (req, res) {
+  console.log('in openAi api');
+  const ingredient = req.body.ingredient;
+  const preference = req.body.preference;
+
+  const result = fetch_openai_api(ingredient, preference);
+
+  res.status(200).json(result);
+});
+
+// custom search api를 이용해 이미지 검색 위한 라우터
 router.post('/custom_search_api/', function (req, res) {
     console.log("in Image Search");
     const name = req.body.name;
