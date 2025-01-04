@@ -1,6 +1,8 @@
+const axios = require('axios');
 var express = require('express');
 var router = express.Router();
-const axios = require('axios');
+var db = require('../controllers/db.js')
+const {json} = require('express/lib/response.js');
 
 // 프로그램 전체 쿼리
 router.post('/custom_search_api/', function (req, res) {

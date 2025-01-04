@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const app = express();
 
 var apiRouter = require('./routes/api_service');
+//var userRouter = require('./routes/user_service');
+var foodRouter = require('./routes/food_service');
 
 app.use(cors());
 app.use(express.json());
@@ -13,10 +15,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 const port = 4000;
 
-
+//라우터 설정
 app.use('/services/api', apiRouter);
+//app.use('/services/user', userRouter);
+app.use('/services/food', foodRouter);
 
-// 기본 라우트 설정
+// 기본 라우트 설정, 홈화면
 app.get('/', (req, res) => {
   res.send('Hello, Express!');
 });
