@@ -1,1 +1,1 @@
-export const open_ai_api_key = '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'
+export const open_ai_api_key = '정보 없음'
