@@ -1,1 +1,1 @@
-export const open_ai_api_key = 'x'
+export const open_ai_api_key = 'xx'
