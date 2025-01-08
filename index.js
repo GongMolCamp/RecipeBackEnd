@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const app = express();
 
 var apiRouter = require('./routes/api_service');
-//var userRouter = require('./routes/user_service');
+var userRouter = require('./routes/user_service');
 var foodRouter = require('./routes/food_service');
 var ingredientRouter = require('./routes/ingredient_service');
 var likeRouter = require('./routes/like_service');
@@ -18,7 +18,7 @@ const port = 4000;
 
 //라우터 설정
 app.use('/services/api', apiRouter);
-//app.use('/services/user', userRouter);
+app.use('/services/user', userRouter);
 app.use('/services/food', foodRouter);
 app.use('/services/ingredient',ingredientRouter);
 app.use('/services/like', likeRouter);
