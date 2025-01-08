@@ -7,7 +7,7 @@ const { json } = require('express/lib/response.js');
 
 router.get('/', function (req, res) {
     //const id = req.params.id; // 경로 매개변수에서 id 값 추출
-    const id=1;
+    const id="1";
 
     db.query('SELECT * FROM RecipeFrontDB.ingredient_table WHERE ingredient_id=?', [id], function(error, results) {
         if (error) {
@@ -40,3 +40,4 @@ router.post('/', function (req, res) {
 
 
 module.exports = router;
+
