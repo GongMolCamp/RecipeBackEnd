@@ -5,6 +5,7 @@ const { json } = require('express/lib/response.js');
 
 //기본 호스팅 주소 /services/ingredient/
 
+//사용자의 id에 맞춰 냉장고 재료들을 보여줌
 router.get('/', function (req, res) {
     //const id = req.params.id; // 경로 매개변수에서 id 값 추출
     const id="1";
@@ -20,6 +21,7 @@ router.get('/', function (req, res) {
     });
 });
 
+//냉장고에 재료추가 
 router.post('/', function (req, res) {
     const { id, reftype, name } = req.body;
 
