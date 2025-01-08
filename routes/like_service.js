@@ -58,7 +58,7 @@ router.post('/delete', async function (req, res) {
     else {
         console.log(results);
     }
-    await update_food_liked(foodId, "+", res);
+    await update_food_liked(foodId, "-", res);
 }); 
 
 module.exports = router;
