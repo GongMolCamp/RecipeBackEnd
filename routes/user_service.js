@@ -48,4 +48,22 @@ router.post('/login', (req, res) => {
       });
     });
 
+//마이페이지
+    router.get('/mypage', (req, res) => {
+      const { user_id } = req.query;
+      const sql = 'SELECT * FROM recipefrontdb.user_table WHERE user_id = ?';
+      db.query(sql, [user_id], (err, results) => {
+        if (err) {
+          console.error('Error executing query:', err.message);
+          return res.status(500).json({ success: false, message: '서버 오류' });
+        }
+    
+        if (results.length > 0) {
+          res.json({ success: true, message: '마이페이지 조회 성공', data: results });
+        } else {
+          res.status(404).json({ success: false, message: 'ID가 일치하지 않습니다.' });
+        }
+      });
+    });
+
     module.exports = router;
