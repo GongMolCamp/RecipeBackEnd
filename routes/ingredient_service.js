@@ -39,6 +39,31 @@ router.post('/', function (req, res) {
     });
 });
 
+//냉장고에 재려 삭제
+router.delete('/', function (req, res){
+    const { id, reftype, name } = req.body;
+
+    if (!id || !name || !reftype) {
+        return res.status(400).json({ message: 'id, name, and reftype are required' });
+    }
+
+    const sql = `
+        DELETE FROM RecipeFrontDB.ingredient_table 
+        WHERE ingredient_id = ? AND ingredient_type = ? AND ingredient_name = ?;
+    `;
+
+    db.query(sql, [id, reftype, name], function (error, results) {
+        if (error) {
+            console.error('Database error:', error.message);
+            return res.status(500).json({ message: 'Database error', error: error.message });
+        } else if (results.affectedRows === 0) {
+            return res.status(404).json({ message: 'No matching ingredient found to delete' });
+        } else {
+            return res.status(200).json({ message: 'Ingredient deleted successfully', id: id });
+        }
+    });
+})
+
 
 
 module.exports = router;
