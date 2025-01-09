@@ -8,7 +8,7 @@ const { json } = require('express/lib/response.js');
 //사용자의 id에 맞춰 냉장고 재료들을 보여줌
 router.get('/', function (req, res) {
     //const id = req.params.id; // 경로 매개변수에서 id 값 추출
-    const id="1";
+    const id=req.query.id || "1";
 
     db.query('SELECT * FROM RecipeFrontDB.ingredient_table WHERE ingredient_id=?', [id], function(error, results) {
         if (error) {
@@ -22,25 +22,46 @@ router.get('/', function (req, res) {
 });
 
 //냉장고에 재료추가 
-router.post('/', function (req, res) {
+router.post('/', (req, res) => {
     const { id, reftype, name } = req.body;
 
-    if (!id || !name || !reftype) {
-        return res.status(400).json({ message: 'id, name, and reftype are required' });
+    if (!id || !reftype || !name) {
+        return res.status(400).json({ message: 'id, reftype, and name are required' });
     }
 
-    db.query('INSERT INTO RecipeFrontDB.ingredient_table (ingredient_id, ingredient_type, ingredient_name) VALUES (?, ?, ?)', [id, reftype, name], function(error, results) {
-        if (error) {
-            console.error('Database error:', error.message);
-            return res.status(500).json({ message: 'Database error', error: error.message });
-        } else {
-            return res.status(201).json({ message: 'Ingredient added successfully', id: id });
+    // 중복 확인 및 삽입
+    db.query(
+        'SELECT * FROM ingredient_table WHERE ingredient_id = ? AND ingredient_type = ? AND ingredient_name = ?',
+        [id, reftype, name],
+        (error, results) => {
+            if (error) {
+                console.error('Database error:', error.message);
+                return res.status(500).json({ error: 'Database error' });
+            }
+
+            if (results.length > 0) {
+                return res.status(400).json({ error: 'Duplicate entry' });
+            }
+
+            // 중복이 없으면 삽입
+            db.query(
+                'INSERT INTO ingredient_table (ingredient_id, ingredient_type, ingredient_name) VALUES (?, ?, ?)',
+                [id, reftype, name],
+                (error) => {
+                    if (error) {
+                        console.error('Database error:', error.message);
+                        return res.status(500).json({ error: 'Database error' });
+                    }
+                    return res.status(200).json({ message: 'Ingredient added successfully' });
+                }
+            );
         }
-    });
+    );
 });
 
-//냉장고에 재려 삭제
-router.delete('/', function (req, res){
+
+
+router.delete('/', function (req, res) {
     const { id, reftype, name } = req.body;
 
     if (!id || !name || !reftype) {
@@ -62,7 +83,8 @@ router.delete('/', function (req, res){
             return res.status(200).json({ message: 'Ingredient deleted successfully', id: id });
         }
     });
-})
+});
+
 
 
 
