@@ -62,7 +62,7 @@ async function insert_food_table (datas) {
     const [return_data1, fields1] = await db.query('SELECT * FROM RecipeFrontDB.food_table WHERE food_name = ?', [item["dish"]]);
     if (return_data1.length == 0) {
       const src = await search_image(item["dish"]);
-      const [return_data2, fields2] = await db.query('INSERT INTO RecipeFrontDB.food_table (food_name, food_recipe, food_image_src, food_ingredient) VALUES (?, ?, ?, ?)', [item["dish"], item["recipe"], src, JSON.stringify(item["ingredient"])]); 
+      const [return_data2, fields2] = await db.query('INSERT INTO RecipeFrontDB.food_table (food_name, food_recipe, food_image_src, food_ingredient) VALUES (?, ?, ?, ?)', [item["dish"], item["recipe"], src, JSON.stringify({ingre : item["ingredient"]})]); 
     }
   }
   return Array.from(datas["result"], (item) => item["dish"]);
