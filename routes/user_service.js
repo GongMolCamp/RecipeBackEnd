@@ -66,4 +66,40 @@ router.post('/login', (req, res) => {
       });
     });
 
+//정보 수정 페이지
+    router.get('/update', (req, res) => {
+      const { user_id } = req.query;
+      const sql = 'SELECT * FROM recipefrontdb.user_table WHERE user_id = ?';
+      db.query(sql, [user_id], (err, results) => {
+        if (err) {
+          console.error('Error executing query:', err.message);
+          return res.status(500).json({ success: false, message: '서버 오류' });
+        }
+    
+        if (results.length > 0) {
+          res.json({ success: true, message: '개인정보 조회 성공', data: results });
+        } else {
+          res.status(404).json({ success: false, message: 'ID가 일치하지 않습니다.' });
+        }
+      });
+    });
+
+//정보 수정 페이지
+    router.post('/update', (req, res) => {
+      const { user_id, user_password, user_email, user_preference1, user_preference2, user_preference3} = req.body;
+    
+      if (!user_password || !user_email) {
+        return res.status(400).json({ success: false, message: '비밀번호를 입력해주세요.' });
+      }
+    
+      const sql = 'UPDATE recipefrontdb.user_table SET user_email = ?, user_password = ?, user_preference1 = ?, user_preference2 = ?, user_preference3 = ? WHERE user_id = ?';
+      db.query(sql, [user_email, user_password, user_preference1, user_preference2, user_preference3, user_id], (err) => {
+        if (err) {
+          console.error('Error updating user:', err.message);
+          return res.status(500).json({ success: false, message: '서버 오류' });
+        }
+        res.status(201).json({ success: true, message: '회원 정보 수정 성공!' });
+      });
+    });
+
     module.exports = router;
