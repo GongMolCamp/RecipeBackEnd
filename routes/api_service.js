@@ -6,6 +6,7 @@ const {open_ai_api_key} = require('../API_KEYS/OPEN_API_KEY');
 const fs = require('fs');
 const db = require('../controllers/async_db.js');
 const { type } = require('os');
+const res = require('express/lib/response.js');
 
 //mysql2/pool 에서 query에 function을 넣는것을 제한하고 있음.
 // 해결 방안, ex const [result, columns] = db.query("");
@@ -37,12 +38,12 @@ async function query_food_by_name(params, res) {
   const name_list = params;
   const statement = 'SELECT * FROM RecipeFrontDB.food_table WHERE food_name IN (' 
   + JSON.stringify(name_list).slice(1, -1) + ')';
-  console.log(statement);
+  //console.log(statement);
   
   const[results, fields] = await db.query(statement);
   //console.log(results);
   //console.log(fields);
-  res.status(200).send(results);
+  res.status(200).json({item : results});
 }
 
 
@@ -56,7 +57,7 @@ async function insert_food_table (datas) {
 
   // object to array, 데이터베이스에 음식 데이터가 없으면 추가.
   let dish_list =  Array.from(datas["result"], (item) => item);
-  console.log(dish_list);
+  //console.log(dish_list);
   for (item of dish_list) {
     const [return_data1, fields1] = await db.query('SELECT * FROM RecipeFrontDB.food_table WHERE food_name = ?', [item["dish"]]);
     if (return_data1.length == 0) {
@@ -93,20 +94,36 @@ async function fetch_openai_api(ingredient, preference) {
   return result;
 }
 
+async function query_ingredient(id) {
+  const [results, field ,error] = await db.query('SELECT ingredient_name FROM RecipeFrontDB.ingredient_table WHERE ingredient_id = ?', [id]);
+  if (error) {
+    console.log("error " , error);
+  }
+  var ingredients = "";
+  results.map((item) => {
+    ingredients += item["ingredient_name"] + ", ";
+  });
+  return ingredients;
+}
+
 // openAI api 호출 라우터
 router.post('/ask_recipe', async function (req, res) {
-  console.log('in openAi api');
-  const ingredient = req.body.ingredient;
+  
+  const userId = req.body.id;
   const preference = req.body.preference;
+  const ingredient = await query_ingredient(userId);
+  
+  
+  console.log("openai called");
   
   // api 호출
   const result = await fetch_openai_api(ingredient, preference);
   
   // food_table에 insert
   const data = await insert_food_table(result);
+
   // food_table query해서 response 전송!
   await query_food_by_name(data, res);
-  //res.status(200).send({message : "end"});
 });
 
 //test용임.
@@ -114,7 +131,7 @@ router.post('/ask_recipe', async function (req, res) {
 router.post('/custom_search_api', function (req, res) {
     console.log("in Image Search");
     const name = req.body.name;
-    console.log(name);
+    //console.log(name);
     res.send(search_image(name));
 });
 

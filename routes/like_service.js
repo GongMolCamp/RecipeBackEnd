@@ -12,9 +12,9 @@ const sql = require('../controllers/async_db.js');
 router.post('/', async function (req, res) {
     const userId = req.body["user_id"];
     const foodId = req.body["food_id"];
-    console.log(userId , " , ", foodId);
+    //console.log(userId , " , ", foodId);
     const [results, fields] = await db.query('SELECT * FROM RecipeFrontDB.liked_table WHERE liked_user_id = ? AND liked_food_id = ?;', [userId, foodId]);
-    console.log(results.length);
+    //console.log(results.length);
     res.status(200).json({item : results.length});
 }); 
 
@@ -26,7 +26,7 @@ async function update_food_liked (foodId, num, res) {
         res.status(400).json({message : "error"});
     }
     else {
-        console.log(results);
+        //console.log(results);
     }
     res.status(200).json({message : "success"});
 }
@@ -35,13 +35,13 @@ async function update_food_liked (foodId, num, res) {
 router.post('/add', async function (req, res) {
     const userId = req.body["user_id"];
     const foodId = req.body["food_id"];
-    console.log(userId , " , ", foodId);
+    //console.log(userId , " , ", foodId);
     const [results, error, fields] = await db.query('INSERT INTO RecipeFrontDB.liked_table (liked_user_id, liked_food_id) VALUES (?, ?);', [userId, foodId]);
     if (error) {
         res.status(400).json({message : "error"});
     }
     else {
-        console.log(results);
+        //console.log(results);
     }
     await update_food_liked(foodId, "+", res);
 }); 
@@ -50,13 +50,13 @@ router.post('/add', async function (req, res) {
 router.post('/delete', async function (req, res) {
     const userId = req.body["user_id"];
     const foodId = req.body["food_id"];
-    console.log(userId , " , ", foodId);
+    //console.log(userId , " , ", foodId);
     const [results, error, fields] = await db.query('DELETE FROM RecipeFrontDB.liked_table WHERE liked_user_id = ? AND liked_food_id = ?;', [userId, foodId]);
     if (error) {
         res.status(400).json({message : "error"});
     }
     else {
-        console.log(results);
+        //console.log(results);
     }
     await update_food_liked(foodId, "-", res);
 }); 
