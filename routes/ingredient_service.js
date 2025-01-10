@@ -7,10 +7,12 @@ const { json } = require('express/lib/response.js');
 
 //사용자의 id에 맞춰 냉장고 재료들을 보여줌
 router.get('/', function (req, res) {
-    //const id = req.params.id; // 경로 매개변수에서 id 값 추출
-    const id=req.query.id || "1";
+    const id = req.query.id; // 경로 매개변수에서 id 값 추출
+    //const id=req.body.id;
+    const sql = `SELECT * FROM RecipeFrontDB.ingredient_table WHERE ingredient_id = 'test';`
+    const sql2 = `SELECT * FROM RecipeFrontDB.ingredient_table WHERE ingredient_id=?`
 
-    db.query('SELECT * FROM RecipeFrontDB.ingredient_table WHERE ingredient_id=?', [id], function(error, results) {
+    db.query(sql2, [id], function(error, results) {
         if (error) {
             console.log(error.message);
             res.status(500).json({ message: error.message });
