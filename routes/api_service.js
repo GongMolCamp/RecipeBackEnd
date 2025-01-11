@@ -22,7 +22,7 @@ async function search_image(name) {
     //console.log(URI);
     // JSONPlaceholder API를 사용하여 가짜 사용자 목록 가져오기
     const response = await axios.get(URI);
-    const result = response.data['items'][0]['pagemap']['cse_thumbnail'];
+    const result = response.data["items"][0]['pagemap']['cse_thumbnail'];
 
     // 응답 데이터 리턴
     const result_src = result[0]["src"];
