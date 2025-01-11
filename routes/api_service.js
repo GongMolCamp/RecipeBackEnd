@@ -38,11 +38,9 @@ async function query_food_by_name(params, res) {
   const name_list = params;
   const statement = 'SELECT * FROM RecipeFrontDB.food_table WHERE food_name IN (' 
   + JSON.stringify(name_list).slice(1, -1) + ')';
-  //console.log(statement);
   
   const[results, fields] = await db.query(statement);
-  //console.log(results);
-  //console.log(fields);
+  
   res.status(200).json({item : results});
 }
 
@@ -55,9 +53,9 @@ async function insert_food_table (datas) {
   data = JSON.parse(data);
   */
 
-  // object to array, 데이터베이스에 음식 데이터가 없으면 추가.
+  
   let dish_list =  Array.from(datas["result"], (item) => item);
-  //console.log(dish_list);
+  
   for (item of dish_list) {
     const [return_data1, fields1] = await db.query('SELECT * FROM RecipeFrontDB.food_table WHERE food_name = ?', [item["dish"]]);
     if (return_data1.length == 0) {
@@ -88,9 +86,9 @@ async function fetch_openai_api(ingredient, preference) {
       }
     ]
   });
-  //console.log(response.choices[0].message.content);
+  
   const result = JSON.parse(response.choices[0].message.content);
-  //console.log(result);
+  
   return result;
 }
 
